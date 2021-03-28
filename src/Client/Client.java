@@ -1,6 +1,5 @@
 package Client;
 
-import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -31,9 +30,9 @@ public class Client {
                 }
                 parser.parse(command);
                 if (inputStream.readBoolean()) {
-                    System.out.println("Status: " + Colors.GREEN + "OK" + Colors.RESET);
+                    System.out.println("Status: OK");
                 } else {
-                    System.out.println("Status: " + Colors.RED + "SE" + Colors.RESET);
+                    System.out.println("Status: SE");
                 }
                 inputStream.close();
                 outputStream.close();
@@ -45,6 +44,7 @@ public class Client {
     }
 
     protected static void exit() throws IOException {
+        outputStream.writeUTF("exit");
         inputStream.close();
         outputStream.close();
         socket.close();
@@ -77,10 +77,4 @@ public class Client {
     //D:\IdeaProjects\ServerProject\src\folder1
     //C:\Users\Tony\Desktop\logo512_512.png
     //C:\Users\Tony\Desktop\14.png
-
-    static class Colors { //enum?
-        public static String RESET = "\u001B[0m";
-        public static String RED = "\u001B[31m";
-        public static String GREEN = "\u001B[32m";
-    }
 }

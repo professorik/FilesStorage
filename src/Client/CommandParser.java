@@ -1,5 +1,8 @@
 package Client;
 
+
+import org.json.simple.JSONObject;
+
 import java.io.IOException;
 
 public class CommandParser {
@@ -11,5 +14,11 @@ public class CommandParser {
         }else{
             Client.sendFile(command);
         }
+    }
+
+    protected String getCommand(String command){
+        JSONObject jsonObject = new JSONObject();
+        //jsonObject.put("client", new JSONObject().put("register"));
+        return jsonObject.toString();
     }
 }
