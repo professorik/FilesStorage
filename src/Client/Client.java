@@ -28,12 +28,8 @@ public class Client {
                     exit();
                     break;
                 }
-                parser.parse(command);
-                if (inputStream.readBoolean()) {
-                    System.out.println("Status: OK");
-                } else {
-                    System.out.println("Status: SE");
-                }
+                parser.parseRequest(command);
+                parser.parseResponse(inputStream.readUTF());
                 inputStream.close();
                 outputStream.close();
                 socket.close();
@@ -55,6 +51,10 @@ public class Client {
     }
 
     protected static void setFolder(String path) throws IOException {
+        outputStream.writeUTF(path);
+    }
+
+    protected static void mkFolder(String path) throws IOException {
         outputStream.writeUTF(path);
     }
 
