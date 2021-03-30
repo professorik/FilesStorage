@@ -4,9 +4,9 @@ import Warnings.CallbackGenerator;
 
 import java.io.*;
 
-public class FileManager{
+public class ServerFileManager {
 
-    private static String currentPath = "D:\\IdeaProjects\\ServerProject\\src\\folder1";
+    private String currentPath = "D:\\IdeaProjects\\ServerProject\\src\\folder1";
 
     protected CallbackGenerator.Messages setPath(String currentPath) {
         File theDir = new File(currentPath);
@@ -48,6 +48,7 @@ public class FileManager{
         return CallbackGenerator.Messages.SUC;
     }
 
+    //FIXME
     protected CallbackGenerator.Messages register(String nickname){
         String folder = null;
         for (char i = 'E'; i < 'Z'; ++i) {

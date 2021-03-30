@@ -25,11 +25,10 @@ public class Server {
         private Socket socket;
         private DataOutputStream outputStream = null;
         private DataInputStream inputStream = null;
-        private CommandParser parser;
+        private ServerParser parser;
 
         public ServerConnectionProcessor(Socket socket) {
             this.socket = socket;
-            parser = new CommandParser();
         }
 
         @Override
@@ -37,7 +36,13 @@ public class Server {
             try {
                 inputStream = new DataInputStream(socket.getInputStream());
                 outputStream = new DataOutputStream(socket.getOutputStream());
-                parser.parse(inputStream.readUTF(), inputStream, outputStream); //sleep(1000);
+                parser = new ServerParser(inputStream, outputStream);
+                String s = inputStream.readUTF();
+                while (s != null && !s.equals("exit")) {
+                    parser.parseRequest(s);
+                    s = inputStream.readUTF();
+                }
+                System.out.println("User has disconnected");
                 inputStream.close();
                 outputStream.close();
                 socket.close();

@@ -10,29 +10,23 @@ public class Client {
     private static Socket socket;
     private static DataOutputStream outputStream;
     private static DataInputStream inputStream;
-    private static boolean isSignedIn;
-    private static String currentFolder;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        isSignedIn = false;
-        CommandParser parser = new CommandParser();
         try {
+            System.out.println("Client is running...");
+            socket = new Socket(host, port);
+            outputStream = new DataOutputStream(socket.getOutputStream());
+            inputStream = new DataInputStream(socket.getInputStream());
+            ClientParser parser = new ClientParser(inputStream, outputStream);
             while (true) {
-                System.out.println("Client is running...");
-                socket = new Socket(host, port);
-                outputStream = new DataOutputStream(socket.getOutputStream());
-                inputStream = new DataInputStream(socket.getInputStream());
                 String command = in.nextLine();
-                if (command.equals("exit")){
+                if (command.equals("exit")) {
                     exit();
                     break;
                 }
                 parser.parseRequest(command);
                 parser.parseResponse(inputStream.readUTF());
-                inputStream.close();
-                outputStream.close();
-                socket.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,36 +39,10 @@ public class Client {
         outputStream.close();
         socket.close();
     }
-
-    protected static void register(String nickname) throws IOException {
-        outputStream.writeUTF(nickname);
-    }
-
-    protected static void setFolder(String path) throws IOException {
-        outputStream.writeUTF(path);
-    }
-
-    protected static void mkFolder(String path) throws IOException {
-        outputStream.writeUTF(path);
-    }
-
-    protected static void sendFile(String path) throws IOException {
-        int bytes = 0;
-        File file = new File(path);
-        outputStream.writeUTF(file.getName());
-        FileInputStream fileInputStream = new FileInputStream(file);
-        // send file size
-        outputStream.writeLong(file.length());
-        // break file into chunks
-        byte[] buffer = new byte[4*1024];
-        while ((bytes=fileInputStream.read(buffer))!=-1){
-            outputStream.write(buffer,0,bytes);
-            outputStream.flush();
-        }
-        fileInputStream.close();
-    }
-
-    //D:\IdeaProjects\ServerProject\src\folder1
-    //C:\Users\Tony\Desktop\logo512_512.png
-    //C:\Users\Tony\Desktop\14.png
 }
+/*
+cd D:\IdeaProjects\ServerProject\src\folder1
+mkdir folder10
+C:\Users\Tony\Desktop\logo512_512.png
+C:\Users\Tony\Desktop\14.png
+ */
