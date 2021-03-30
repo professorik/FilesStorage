@@ -4,31 +4,39 @@ package Client;
  * @created 30/03/2021 - 10:39
  * @project Server
  */
+import Interfaces.FileManager;
+import Warnings.CallbackGenerator;
+
 import java.io.*;
 
-public class ClientFileManager {
+public class ClientFileManager extends FileManager {
 
     private DataOutputStream outputStream;
 
     public ClientFileManager(DataOutputStream outputStream) {
         this.outputStream = outputStream;
+        currentPath = "D:\\IdeaProjects\\ServerProject\\src\\downloads";//"D:\\Downloads";
     }
 
     protected void sendCommand(String command) throws IOException{
         outputStream.writeUTF(command);
     }
 
-    protected void sendFile(String path) throws IOException {
-        int bytes;
-        File file = new File(path);
-        outputStream.writeUTF("REPLACE " + file.getName());
-        FileInputStream fileInputStream = new FileInputStream(file);
-        outputStream.writeLong(file.length());
-        byte[] buffer = new byte[4 * 1024];
-        while ((bytes = fileInputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytes);
-            outputStream.flush();
+    public CallbackGenerator.Messages sendFile(String path, DataOutputStream outputStream) {
+        try {
+            outputStream.writeUTF("UPLOAD");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        fileInputStream.close();
+        return super.sendFile(path, outputStream);
+    }
+
+    public CallbackGenerator.Messages receiveFile(String path, DataInputStream inputStream) {
+        try {
+            outputStream.writeUTF("DOWNLOAD " + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return super.receiveFile(inputStream);
     }
 }

@@ -26,9 +26,10 @@ public class ClientParser extends CommandParser {
     @Override
     protected void parseRequest(String command) throws IOException {
         String comName = command.split(" ")[0];
-        String com = command.substring(comName.length()+1);
+        String com = command.substring(comName.length()).trim();
         switch (COM.valueOf(comName)){
-            case REPLACE -> manager.sendFile(com);
+            case UPLOAD -> manager.sendFile(com, outputStream);
+            case DOWNLOAD -> manager.receiveFile(com, inputStream);
             default -> manager.sendCommand(command);
         }
     }
@@ -44,3 +45,10 @@ public class ClientParser extends CommandParser {
         }
     }
 }
+/*
+CD D:\IdeaProjects\ServerProject\src\folder1
+MKDIR folder10
+UPLOAD C:\Users\Tony\Desktop\logo512_512.png
+DOWNLOAD D:\IdeaProjects\ServerProject\src\folder1\logo512_512.png
+UPLOAD C:\Users\Tony\Desktop\14.png
+ */

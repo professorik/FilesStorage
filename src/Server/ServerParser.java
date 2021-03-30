@@ -23,14 +23,16 @@ public class ServerParser extends CommandParser {
     @Override
     protected void parseRequest(String com) {
         String comName = com.split(" ")[0];
-        com = com.substring(comName.length()+1);
-        switch (COM.valueOf(comName)){
-            case CD -> parseResponse(CallbackGenerator.createMessage(manager.setPath(com)));
-            case MKDIR -> parseResponse(CallbackGenerator.createMessage(manager.createFolder(com)));
-            case REG ->  parseResponse(CallbackGenerator.createMessage(manager.register(com)));
-            case REPLACE -> parseResponse(CallbackGenerator.createMessage(manager.receiveFile(com, inputStream)));
-            default -> parseRequest(CallbackGenerator.createMessage(CallbackGenerator.Messages.UNKNOWN));
-        }
+        com = com.substring(comName.length()).trim();
+        CallbackGenerator.Messages message = switch (COM.valueOf(comName)){
+            case CD -> manager.setPath(com);
+            case MKDIR -> manager.createFolder(com);
+            case REG ->  manager.register(com);
+            case UPLOAD -> manager.receiveFile(inputStream);
+            case DOWNLOAD -> manager.sendFile(com, outputStream);
+            default -> CallbackGenerator.Messages.UNKNOWN;
+        };
+        parseResponse(CallbackGenerator.createMessage(message));
     }
 
     @Override

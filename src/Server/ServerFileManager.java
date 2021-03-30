@@ -4,13 +4,16 @@ package Server;
  * @created 30/03/2021 - 10:39
  * @project Server
  */
+import Interfaces.FileManager;
 import Warnings.CallbackGenerator;
 
 import java.io.*;
 
-public class ServerFileManager {
+public class ServerFileManager extends FileManager {
 
-    private String currentPath = "D:\\IdeaProjects\\ServerProject\\src\\folder1";
+    public ServerFileManager() {
+        currentPath = "D:\\IdeaProjects\\ServerProject\\src\\folder1";
+    }
 
     protected CallbackGenerator.Messages setPath(String currentPath) {
         File theDir = new File(currentPath);
@@ -28,28 +31,6 @@ public class ServerFileManager {
             return CallbackGenerator.Messages.SUC;
         }
         return CallbackGenerator.Messages.DIR_EXST;
-    }
-
-    protected CallbackGenerator.Messages receiveFile(String fileName, DataInputStream inputStream) {
-        try {
-            System.out.println("Start receiving...");
-            int bytes = 0;
-            FileOutputStream fileOutputStream = new FileOutputStream(currentPath + "/" + fileName);
-            long size = inputStream.readLong();
-            byte[] buffer = new byte[4 * 1024];
-            while (size > 0 && (bytes = inputStream.read(buffer, 0, (int) Math.min(buffer.length, size))) != -1) {
-                fileOutputStream.write(buffer, 0, bytes);
-                size -= bytes;
-            }
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return CallbackGenerator.Messages.FNFE;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return CallbackGenerator.Messages.SYS_ERR;
-        }
-        return CallbackGenerator.Messages.SUC;
     }
 
     //FIXME

@@ -44,9 +44,3 @@ public class Client {
         socket.close();
     }
 }
-/*
-CD D:\IdeaProjects\ServerProject\src\folder1
-MKDIR folder10
-REPLACE C:\Users\Tony\Desktop\logo512_512.png
-REPLACE C:\Users\Tony\Desktop\14.png
- */

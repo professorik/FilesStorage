@@ -12,8 +12,8 @@ public abstract class CommandParser {
 
     protected enum COM{
         CD("CD"), COPY("COPY"), DEL("DEL"), DIR("DIR"), EXIT("EXIT"), FIND("FIND"),
-        HELP("HELP"), MKDIR("MKDIR"), MOVE("MOVE"), REN("REN"), REPLACE("REPLACE"),
-        RMDIR("RMDIR"), REG("REG"), LOG("LOG");
+        HELP("HELP"), MKDIR("MKDIR"), MOVE("MOVE"), REN("REN"), UPLOAD("UPLOAD"),
+        RMDIR("RMDIR"), REG("REG"), LOG("LOG"), DOWNLOAD("DL");
         private final String label;
 
         COM(String cmndName) {
