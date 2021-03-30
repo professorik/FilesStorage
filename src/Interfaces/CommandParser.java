@@ -1,5 +1,9 @@
 package Interfaces;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

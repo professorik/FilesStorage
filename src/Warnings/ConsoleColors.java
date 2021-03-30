@@ -1,5 +1,9 @@
 package Warnings;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 public class ConsoleColors {
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset

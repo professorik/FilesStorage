@@ -1,6 +1,9 @@
 package Client;
-
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import Interfaces.CommandParser;
 import Warnings.CallbackGenerator;
 import org.json.simple.JSONObject;
@@ -22,8 +25,10 @@ public class ClientParser extends CommandParser {
 
     @Override
     protected void parseRequest(String command) throws IOException {
-        switch (COM.valueOf(command)){
-            case REPLACE -> manager.sendFile(command);
+        String comName = command.split(" ")[0];
+        String com = command.substring(comName.length()+1);
+        switch (COM.valueOf(comName)){
+            case REPLACE -> manager.sendFile(com);
             default -> manager.sendCommand(command);
         }
     }

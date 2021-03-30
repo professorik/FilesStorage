@@ -1,5 +1,9 @@
 package Server;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import Warnings.CallbackGenerator;
 
 import java.io.*;

@@ -1,5 +1,9 @@
 package Client;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -41,8 +45,8 @@ public class Client {
     }
 }
 /*
-cd D:\IdeaProjects\ServerProject\src\folder1
-mkdir folder10
-C:\Users\Tony\Desktop\logo512_512.png
-C:\Users\Tony\Desktop\14.png
+CD D:\IdeaProjects\ServerProject\src\folder1
+MKDIR folder10
+REPLACE C:\Users\Tony\Desktop\logo512_512.png
+REPLACE C:\Users\Tony\Desktop\14.png
  */

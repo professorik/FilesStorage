@@ -1,5 +1,9 @@
 package Server;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;

@@ -1,5 +1,9 @@
 package Server;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import Interfaces.CommandParser;
 import Warnings.CallbackGenerator;
 
@@ -18,16 +22,14 @@ public class ServerParser extends CommandParser {
 
     @Override
     protected void parseRequest(String com) {
-        if (com.startsWith("cd ")) {
-            com = com.substring(3);
-            parseResponse(CallbackGenerator.createMessage(manager.setPath(com)));
-        } else if (com.startsWith("mkdir ")) {
-            com = com.substring(6);
-            parseResponse(CallbackGenerator.createMessage(manager.createFolder(com)));
-        } else if (com.startsWith("reg")) {
-            parseResponse(CallbackGenerator.createMessage(manager.register(com.split(" ")[1])));
-        } else {
-            parseResponse(CallbackGenerator.createMessage(manager.receiveFile(com, inputStream)));
+        String comName = com.split(" ")[0];
+        com = com.substring(comName.length()+1);
+        switch (COM.valueOf(comName)){
+            case CD -> parseResponse(CallbackGenerator.createMessage(manager.setPath(com)));
+            case MKDIR -> parseResponse(CallbackGenerator.createMessage(manager.createFolder(com)));
+            case REG ->  parseResponse(CallbackGenerator.createMessage(manager.register(com)));
+            case REPLACE -> parseResponse(CallbackGenerator.createMessage(manager.receiveFile(com, inputStream)));
+            default -> parseRequest(CallbackGenerator.createMessage(CallbackGenerator.Messages.UNKNOWN));
         }
     }
 

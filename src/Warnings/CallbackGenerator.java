@@ -1,5 +1,9 @@
 package Warnings;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import org.json.simple.JSONObject;
 
 public class CallbackGenerator {
@@ -13,6 +17,7 @@ public class CallbackGenerator {
         SYS_ERR("Some error.", Status.ERR),
         NO_MEM("There is no free memory.", Status.ERR),
         USR_EXST("This nickname is exist.", Status.ERR),
+        UNKNOWN("Unknown command.", Status.ERR),
         FNFE("File not found.", Status.ERR);
         private final String label;
         private final Status type;

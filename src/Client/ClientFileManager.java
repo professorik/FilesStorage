@@ -1,5 +1,9 @@
 package Client;
-
+/**
+ * @author professorik
+ * @created 30/03/2021 - 10:39
+ * @project Server
+ */
 import java.io.*;
 
 public class ClientFileManager {
@@ -14,11 +18,10 @@ public class ClientFileManager {
         outputStream.writeUTF(command);
     }
 
-
     protected void sendFile(String path) throws IOException {
         int bytes;
         File file = new File(path);
-        outputStream.writeUTF(file.getName());
+        outputStream.writeUTF("REPLACE " + file.getName());
         FileInputStream fileInputStream = new FileInputStream(file);
         outputStream.writeLong(file.length());
         byte[] buffer = new byte[4 * 1024];
