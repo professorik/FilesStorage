@@ -30,6 +30,7 @@ public class ClientParser extends CommandParser {
         switch (COM.valueOf(comName)){
             case UPLOAD -> manager.sendFile(com, outputStream);
             case DOWNLOAD -> manager.receiveFile(com, inputStream);
+            case DIR -> manager.lookDirInfo(command, inputStream);
             default -> manager.sendCommand(command);
         }
     }

@@ -30,6 +30,7 @@ public class ServerParser extends CommandParser {
             case REG ->  manager.register(com);
             case UPLOAD -> manager.receiveFile(inputStream);
             case DOWNLOAD -> manager.sendFile(com, outputStream);
+            case DIR -> manager.showDirectory(com, outputStream);
             default -> CallbackGenerator.Messages.UNKNOWN;
         };
         parseResponse(CallbackGenerator.createMessage(message));

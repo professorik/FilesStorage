@@ -6,8 +6,12 @@ package Server;
  */
 import Interfaces.FileManager;
 import Warnings.CallbackGenerator;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.*;
+import java.sql.Date;
+import java.sql.Time;
 
 public class ServerFileManager extends FileManager {
 
@@ -31,6 +35,29 @@ public class ServerFileManager extends FileManager {
             return CallbackGenerator.Messages.SUC;
         }
         return CallbackGenerator.Messages.DIR_EXST;
+    }
+
+    protected CallbackGenerator.Messages showDirectory(String path, DataOutputStream outputStream){
+        File theDir = new File(path);
+        if (theDir.exists() && theDir.isDirectory()) {
+            JSONArray res = new JSONArray();
+            JSONObject fileInfo;
+            for (File i: theDir.listFiles()){
+                fileInfo = new JSONObject();
+                fileInfo.put("isDir", i.isDirectory());
+                fileInfo.put("name", i.getName());
+                fileInfo.put("time", i.lastModified());
+                res.add(fileInfo);
+            }
+            try {
+                outputStream.writeUTF(res.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return CallbackGenerator.Messages.SYS_ERR;
+            }
+            return CallbackGenerator.Messages.SUC;
+        }
+        return CallbackGenerator.Messages.NO_DIR;
     }
 
     //FIXME
