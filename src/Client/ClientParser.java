@@ -4,6 +4,7 @@ package Client;
  * @created 30/03/2021 - 10:39
  * @project Server
  */
+
 import Interfaces.CommandParser;
 import Warnings.CallbackGenerator;
 import org.json.simple.JSONObject;
@@ -25,12 +26,13 @@ public class ClientParser extends CommandParser {
 
     @Override
     protected void parseRequest(String command) throws IOException {
-        String comName = command.split(" ")[0];
+        String comName = command.split(" ")[0].toUpperCase();
         String com = command.substring(comName.length()).trim();
-        switch (COM.valueOf(comName)){
+        switch (COM.valueOf(comName)) {
             case UPLOAD -> manager.sendFile(com, outputStream);
             case DOWNLOAD -> manager.receiveFile(com, inputStream);
             case DIR -> manager.lookDirInfo(command, inputStream);
+            case HELP -> System.out.println(showCommands());
             default -> manager.sendCommand(command);
         }
     }
@@ -48,6 +50,8 @@ public class ClientParser extends CommandParser {
 }
 /*
 CD D:\IdeaProjects\ServerProject\src\folder1
+DEL D:\IdeaProjects\ServerProject\src\folder1\folder2\14.png
+RMDIR D:\IdeaProjects\ServerProject\src\folder1\folder2
 MKDIR folder10
 UPLOAD C:\Users\Tony\Desktop\logo512_512.png
 DOWNLOAD D:\IdeaProjects\ServerProject\src\folder1\logo512_512.png

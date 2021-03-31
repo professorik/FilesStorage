@@ -4,6 +4,7 @@ package Client;
  * @created 30/03/2021 - 10:39
  * @project Server
  */
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -30,7 +31,10 @@ public class Client {
                     break;
                 }
                 parser.parseRequest(command);
-                parser.parseResponse(inputStream.readUTF());
+                //FIXME
+                if (!command.toLowerCase().equals("help")) {
+                    parser.parseResponse(inputStream.readUTF());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

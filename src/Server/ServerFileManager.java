@@ -4,6 +4,7 @@ package Server;
  * @created 30/03/2021 - 10:39
  * @project Server
  */
+
 import Interfaces.FileManager;
 import Warnings.CallbackGenerator;
 import org.json.simple.JSONArray;
@@ -37,12 +38,41 @@ public class ServerFileManager extends FileManager {
         return CallbackGenerator.Messages.DIR_EXST;
     }
 
-    protected CallbackGenerator.Messages showDirectory(String path, DataOutputStream outputStream){
+    protected CallbackGenerator.Messages deleteFile(String path) {
+        File fileTD = new File(path);
+        if (fileTD.exists() && fileTD.isFile()) {
+            fileTD.delete();
+            return CallbackGenerator.Messages.SUC;
+        }
+        return CallbackGenerator.Messages.FNFE;
+    }
+
+    private void deleteDirectory(String path){
+        File dir = new File(path);
+        for (File file: dir.listFiles()){
+            if (file.isDirectory()){
+                deleteDir(file.getAbsolutePath());
+            }
+            file.delete();
+        }
+        dir.delete();
+    }
+
+    protected CallbackGenerator.Messages deleteDir(String path) {
+        File fileTD = new File(path);
+        if (fileTD.exists() && fileTD.isDirectory()) {
+            deleteDirectory(path);
+            return CallbackGenerator.Messages.SUC;
+        }
+        return CallbackGenerator.Messages.FNFE;
+    }
+
+    protected CallbackGenerator.Messages showDirectory(String path, DataOutputStream outputStream) {
         File theDir = new File(path);
         if (theDir.exists() && theDir.isDirectory()) {
             JSONArray res = new JSONArray();
             JSONObject fileInfo;
-            for (File i: theDir.listFiles()){
+            for (File i : theDir.listFiles()) {
                 fileInfo = new JSONObject();
                 fileInfo.put("isDir", i.isDirectory());
                 fileInfo.put("name", i.getName());
@@ -61,18 +91,18 @@ public class ServerFileManager extends FileManager {
     }
 
     //FIXME
-    protected CallbackGenerator.Messages register(String nickname){
+    protected CallbackGenerator.Messages register(String nickname) {
         String folder = null;
         for (char i = 'E'; i < 'Z'; ++i) {
-            if (new File(i+":").exists()){
-                if (new File(i+":\\"+nickname).exists()){
+            if (new File(i + ":").exists()) {
+                if (new File(i + ":\\" + nickname).exists()) {
                     return CallbackGenerator.Messages.USR_EXST;
-                }else if (new File(i+":\\").getFreeSpace() > 1024*1024*1024f) {
+                } else if (new File(i + ":\\").getFreeSpace() > 1024 * 1024 * 1024f) {
                     folder = i + ":\\" + nickname;
                 }
             }
         }
-        if (folder != null){
+        if (folder != null) {
             File file = new File(folder);
             file.mkdirs();
             currentPath = folder;

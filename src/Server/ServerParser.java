@@ -22,7 +22,7 @@ public class ServerParser extends CommandParser {
 
     @Override
     protected void parseRequest(String com) {
-        String comName = com.split(" ")[0];
+        String comName = com.split(" ")[0].toUpperCase();
         com = com.substring(comName.length()).trim();
         CallbackGenerator.Messages message = switch (COM.valueOf(comName)){
             case CD -> manager.setPath(com);
@@ -31,6 +31,8 @@ public class ServerParser extends CommandParser {
             case UPLOAD -> manager.receiveFile(inputStream);
             case DOWNLOAD -> manager.sendFile(com, outputStream);
             case DIR -> manager.showDirectory(com, outputStream);
+            case DEL -> manager.deleteFile(com);
+            case RMDIR -> manager.deleteDir(com);
             default -> CallbackGenerator.Messages.UNKNOWN;
         };
         parseResponse(CallbackGenerator.createMessage(message));
