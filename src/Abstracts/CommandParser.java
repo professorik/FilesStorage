@@ -1,4 +1,4 @@
-package Interfaces;
+package Abstracts;
 /**
  * @author professorik
  * @created 30/03/2021 - 10:39
@@ -49,7 +49,7 @@ public abstract class CommandParser {
     protected DataInputStream inputStream;
     protected DataOutputStream outputStream;
 
-    protected abstract void parseRequest(String com) throws IOException;
+    protected abstract boolean parseRequest(String com) throws IOException;
 
     protected abstract void parseResponse(String com);
 

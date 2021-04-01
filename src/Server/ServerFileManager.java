@@ -5,14 +5,14 @@ package Server;
  * @project Server
  */
 
-import Interfaces.FileManager;
+import Abstracts.FileManager;
 import Warnings.CallbackGenerator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
-import java.sql.Date;
-import java.sql.Time;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ServerFileManager extends FileManager {
 
@@ -51,7 +51,7 @@ public class ServerFileManager extends FileManager {
         File dir = new File(path);
         for (File file: dir.listFiles()){
             if (file.isDirectory()){
-                deleteDir(file.getAbsolutePath());
+                deleteDirectory(file.getAbsolutePath());
             }
             file.delete();
         }
@@ -90,17 +90,16 @@ public class ServerFileManager extends FileManager {
         return CallbackGenerator.Messages.NO_DIR;
     }
 
-    //FIXME
+    //TODO: test
     protected CallbackGenerator.Messages register(String nickname) {
         String folder = null;
-        for (char i = 'E'; i < 'Z'; ++i) {
-            if (new File(i + ":").exists()) {
-                if (new File(i + ":\\" + nickname).exists()) {
-                    return CallbackGenerator.Messages.USR_EXST;
-                } else if (new File(i + ":\\").getFreeSpace() > 1024 * 1024 * 1024f) {
-                    folder = i + ":\\" + nickname;
-                }
+        double minFreeSpace = 1024 * 1024 * 1024d; //1Gb
+        for (File root: Arrays.stream(File.listRoots()).filter(file -> file.getFreeSpace()>minFreeSpace).collect(Collectors.toList())){
+            System.out.println(root.toString());
+            if (Arrays.stream(root.listFiles()).filter(file -> file.getName().equals(nickname)).count() > 0) {
+                return CallbackGenerator.Messages.USR_EXST;
             }
+            folder = root.toString() + nickname;
         }
         if (folder != null) {
             File file = new File(folder);

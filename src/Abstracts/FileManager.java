@@ -1,4 +1,4 @@
-package Interfaces;
+package Abstracts;
 
 import Warnings.CallbackGenerator;
 

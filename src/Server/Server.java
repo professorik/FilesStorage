@@ -42,9 +42,13 @@ public class Server {
                 outputStream = new DataOutputStream(socket.getOutputStream());
                 parser = new ServerParser(inputStream, outputStream);
                 String s = inputStream.readUTF();
-                while (s != null && !s.equals("exit")) {
+                while (true) {
                     parser.parseRequest(s);
-                    s = inputStream.readUTF();
+                    try {
+                        s = inputStream.readUTF();
+                    }catch (EOFException e){
+                        break;
+                    }
                 }
                 System.out.println("User has disconnected");
                 inputStream.close();

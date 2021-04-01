@@ -4,7 +4,7 @@ package Server;
  * @created 30/03/2021 - 10:39
  * @project Server
  */
-import Interfaces.CommandParser;
+import Abstracts.CommandParser;
 import Warnings.CallbackGenerator;
 
 import java.io.DataInputStream;
@@ -21,7 +21,7 @@ public class ServerParser extends CommandParser {
     }
 
     @Override
-    protected void parseRequest(String com) {
+    protected boolean parseRequest(String com) {
         String comName = com.split(" ")[0].toUpperCase();
         com = com.substring(comName.length()).trim();
         CallbackGenerator.Messages message = switch (COM.valueOf(comName)){
@@ -36,6 +36,7 @@ public class ServerParser extends CommandParser {
             default -> CallbackGenerator.Messages.UNKNOWN;
         };
         parseResponse(CallbackGenerator.createMessage(message));
+        return true;
     }
 
     @Override

@@ -23,16 +23,9 @@ public class Client {
             socket = new Socket(host, port);
             outputStream = new DataOutputStream(socket.getOutputStream());
             inputStream = new DataInputStream(socket.getInputStream());
-            ClientParser parser = new ClientParser(inputStream, outputStream);
-            while (true) {
-                String command = in.nextLine();
-                if (command.equals("exit")) {
-                    exit();
-                    break;
-                }
-                parser.parseRequest(command);
-                //FIXME
-                if (!command.toLowerCase().equals("help")) {
+            ClientParser parser = new ClientParser(inputStream, outputStream, socket);
+            while (!socket.isClosed()) {
+                if (parser.parseRequest(in.nextLine())) {
                     parser.parseResponse(inputStream.readUTF());
                 }
             }
