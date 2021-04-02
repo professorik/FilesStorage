@@ -21,10 +21,15 @@ public class ServerFileManager extends FileManager {
     }
 
     protected CallbackGenerator.Messages setPath(String currentPath) {
+        if (currentPath.endsWith("\\") || currentPath.endsWith("/")){ //FIXME: incorrect method
+            currentPath = currentPath.substring(0, currentPath.length()-1);
+        }
         File theDir = new File(currentPath);
         if (theDir.exists()) {
             this.currentPath = currentPath;
             return CallbackGenerator.Messages.SUC;
+        }else if (!currentPath.startsWith(this.currentPath)) {
+            return setPath(this.currentPath + "\\" + currentPath);
         }
         return CallbackGenerator.Messages.NO_DIR;
     }
@@ -40,9 +45,13 @@ public class ServerFileManager extends FileManager {
 
     protected CallbackGenerator.Messages deleteFile(String path) {
         File fileTD = new File(path);
-        if (fileTD.exists() && fileTD.isFile()) {
-            fileTD.delete();
-            return CallbackGenerator.Messages.SUC;
+        if (fileTD.exists()) {
+            if (fileTD.isFile()) {
+                fileTD.delete();
+                return CallbackGenerator.Messages.SUC;
+            }
+        }else if (!path.startsWith(this.currentPath)) {
+            return deleteFile(this.currentPath + "\\" + path);
         }
         return CallbackGenerator.Messages.FNFE;
     }
@@ -60,42 +69,48 @@ public class ServerFileManager extends FileManager {
 
     protected CallbackGenerator.Messages deleteDir(String path) {
         File fileTD = new File(path);
-        if (fileTD.exists() && fileTD.isDirectory()) {
-            deleteDirectory(path);
-            return CallbackGenerator.Messages.SUC;
+        if (fileTD.exists()){
+            if (fileTD.isDirectory()) {
+                deleteDirectory(path);
+                return CallbackGenerator.Messages.SUC;
+            }
+        }else if (!path.startsWith(this.currentPath)) {
+            return deleteDir(this.currentPath + "\\" + path);
         }
         return CallbackGenerator.Messages.FNFE;
     }
 
     protected CallbackGenerator.Messages showDirectory(String path, DataOutputStream outputStream) {
         File theDir = new File(path);
-        if (theDir.exists() && theDir.isDirectory()) {
-            JSONArray res = new JSONArray();
-            JSONObject fileInfo;
-            for (File i : theDir.listFiles()) {
-                fileInfo = new JSONObject();
-                fileInfo.put("isDir", i.isDirectory());
-                fileInfo.put("name", i.getName());
-                fileInfo.put("time", i.lastModified());
-                res.add(fileInfo);
+        if (theDir.exists()){
+            if (theDir.isDirectory()) {
+                JSONArray res = new JSONArray();
+                JSONObject fileInfo;
+                for (File i : theDir.listFiles()) {
+                    fileInfo = new JSONObject();
+                    fileInfo.put("isDir", i.isDirectory());
+                    fileInfo.put("name", i.getName());
+                    fileInfo.put("time", i.lastModified());
+                    res.add(fileInfo);
+                }
+                try {
+                    outputStream.writeUTF(res.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return CallbackGenerator.Messages.SYS_ERR;
+                }
+                return CallbackGenerator.Messages.SUC;
             }
-            try {
-                outputStream.writeUTF(res.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return CallbackGenerator.Messages.SYS_ERR;
-            }
-            return CallbackGenerator.Messages.SUC;
+        }else if (!path.startsWith(this.currentPath)) {
+            return showDirectory(this.currentPath + "\\" + path, outputStream);
         }
         return CallbackGenerator.Messages.NO_DIR;
     }
 
-    //TODO: test
     protected CallbackGenerator.Messages register(String nickname) {
         String folder = null;
         double minFreeSpace = 1024 * 1024 * 1024d; //1Gb
         for (File root: Arrays.stream(File.listRoots()).filter(file -> file.getFreeSpace()>minFreeSpace).collect(Collectors.toList())){
-            System.out.println(root.toString());
             if (Arrays.stream(root.listFiles()).filter(file -> file.getName().equals(nickname)).count() > 0) {
                 return CallbackGenerator.Messages.USR_EXST;
             }

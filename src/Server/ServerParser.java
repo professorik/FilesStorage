@@ -21,7 +21,7 @@ public class ServerParser extends CommandParser {
     }
 
     @Override
-    protected boolean parseRequest(String com) {
+    protected boolean parseRequest(String com) throws IOException {
         String comName = com.split(" ")[0].toUpperCase();
         com = com.substring(comName.length()).trim();
         CallbackGenerator.Messages message = switch (COM.valueOf(comName)){

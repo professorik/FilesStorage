@@ -4,6 +4,7 @@ package Client;
  * @created 30/03/2021 - 10:39
  * @project Server
  */
+
 import Abstracts.FileManager;
 import Warnings.CallbackGenerator;
 import org.json.simple.JSONArray;
@@ -25,32 +26,46 @@ public class ClientFileManager extends FileManager {
         currentPath = "D:\\IdeaProjects\\ServerProject\\src\\downloads";//"D:\\Downloads";
     }
 
-    protected boolean sendCommand(String command) throws IOException{
+    protected boolean sendCommand(String command) throws IOException {
         outputStream.writeUTF(command);
         return true;
     }
 
     protected boolean lookDirInfo(String com, DataInputStream inputStream) throws IOException {
         sendCommand(com);
-        String res = inputStream.readUTF();
+        String res;
+        boolean fl = false; //need to read success status //FIXME
         try {
-            JSONArray slideContent = (JSONArray) new JSONParser().parse(res);
+            Object tempObj;
+            do {
+                fl = !fl;
+                res = inputStream.readUTF();
+                tempObj = new JSONParser().parse(res);
+                if (tempObj instanceof JSONObject){
+                    JSONObject jsonObject = (JSONObject) tempObj;
+                    String key = jsonObject.keySet().iterator().next().toString();
+                    if (!CallbackGenerator.displayMessage(CallbackGenerator.Messages.valueOf((String) jsonObject.get(key)))){
+                        return false;
+                    }
+                }
+            } while (!(tempObj instanceof JSONArray));
+            JSONArray slideContent = (JSONArray) tempObj;
             Iterator i = slideContent.iterator();
             while (i.hasNext()) {
                 JSONObject file = (JSONObject) i.next();
-                long lastMod = (long)file.get("time");
+                long lastMod = (long) file.get("time");
                 System.out.print(new Date(lastMod));
-                if ((boolean)file.get("isDir")){
+                if ((boolean) file.get("isDir")) {
                     System.out.print("\t<DIR>\t");
-                }else{
+                } else {
                     System.out.print("\t\t\t");
                 }
                 System.out.println(file.get("name"));
             }
-        }catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-        return true;
+        return fl;
     }
 
     public boolean sendFile(String path, DataOutputStream outputStream, boolean isClient) { //FIXME

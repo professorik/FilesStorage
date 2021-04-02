@@ -10,14 +10,14 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    private static String host = "localhost";//"192.168.0.228";
+    private final static String host = "localhost";//"192.168.0.228";
     private static int port = 3333;
-    private static Socket socket;
-    private static DataOutputStream outputStream;
-    private static DataInputStream inputStream;
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
+        Socket socket;
+        DataOutputStream outputStream;
+        DataInputStream inputStream;
         try {
             System.out.println("Client is running...");
             socket = new Socket(host, port);
@@ -32,12 +32,5 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    protected static void exit() throws IOException {
-        outputStream.writeUTF("exit");
-        inputStream.close();
-        outputStream.close();
-        socket.close();
     }
 }
