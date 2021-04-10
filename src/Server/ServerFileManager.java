@@ -6,6 +6,7 @@ package Server;
  */
 
 import Abstracts.FileManager;
+import Server.DB.DBController;
 import Warnings.CallbackGenerator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,17 +17,36 @@ import java.util.stream.Collectors;
 
 public class ServerFileManager extends FileManager {
 
+    private DBController dbCon;
+    private String userName;
+    protected boolean isSignedIn;
+
     public ServerFileManager() {
-        currentPath = "D:\\IdeaProjects\\ServerProject\\src\\folder1";
+        dbCon = new DBController();
+        isSignedIn = false;
+    }
+
+    protected CallbackGenerator.Messages signIn(String name, String password){
+        isSignedIn = dbCon.userExist(name, password);
+        if (isSignedIn){
+            userName = name;
+            currentPath = dbCon.getPath(userName);
+        }else{
+            userName = null;
+            currentPath = null;
+            return CallbackGenerator.Messages.SYS_ERR; // fixme
+        }
+        return CallbackGenerator.Messages.SUC;
     }
 
     protected CallbackGenerator.Messages setPath(String currentPath) {
-        if (currentPath.endsWith("\\") || currentPath.endsWith("/")){ //FIXME: incorrect method
+        if (currentPath.endsWith("\\") || currentPath.endsWith("/")){ //FIXME: incorrect via endsWith
             currentPath = currentPath.substring(0, currentPath.length()-1);
         }
         File theDir = new File(currentPath);
         if (theDir.exists()) {
             this.currentPath = currentPath;
+            dbCon.updatePath(userName, currentPath);
             return CallbackGenerator.Messages.SUC;
         }else if (!currentPath.startsWith(this.currentPath)) {
             return setPath(this.currentPath + "\\" + currentPath);
@@ -107,21 +127,56 @@ public class ServerFileManager extends FileManager {
         return CallbackGenerator.Messages.NO_DIR;
     }
 
-    protected CallbackGenerator.Messages register(String nickname) {
+    private boolean isPasswordsValid(String pass1, String pass2){
+        if (pass1.equals(pass2) && pass1.length() > 3){ //todo: add validation
+            return true;
+        }
+        return false;
+    }
+
+    protected CallbackGenerator.Messages changePassword(String pass1, String pass2){
+        if (isPasswordsValid(pass1, pass2)){
+            dbCon.updatePassword(userName, pass1);
+        }
+        return CallbackGenerator.Messages.SYS_ERR; //fixme
+    }
+
+    protected CallbackGenerator.Messages register(String nickname, String pass1, String pass2){
+        if (isPasswordsValid(pass1, pass2)) {
+            return register(nickname, pass1);
+        }
+        return CallbackGenerator.Messages.SYS_ERR; //fixme
+    }
+
+    private CallbackGenerator.Messages register(String nickname, String password) {
+        if (dbCon.userExist(nickname)){
+            return CallbackGenerator.Messages.USR_EXST;
+        }
         String folder = null;
         double minFreeSpace = 1024 * 1024 * 1024d; //1Gb
         for (File root: Arrays.stream(File.listRoots()).filter(file -> file.getFreeSpace()>minFreeSpace).collect(Collectors.toList())){
             if (Arrays.stream(root.listFiles()).filter(file -> file.getName().equals(nickname)).count() > 0) {
-                return CallbackGenerator.Messages.USR_EXST;
+                return CallbackGenerator.Messages.SYS_ERR; //protecting from another users folders
             }
             folder = root.toString() + nickname;
         }
         if (folder != null) {
             File file = new File(folder);
             file.mkdirs();
-            currentPath = folder;
+            this.currentPath = folder;
+            this.userName = nickname;
+            isSignedIn = true;
+            dbCon.registerUser(nickname, password, currentPath);
             return CallbackGenerator.Messages.SUC;
         }
         return CallbackGenerator.Messages.NO_MEM;
+    }
+
+    protected CallbackGenerator.Messages delete(String nickname, String password){
+        if (dbCon.userExist(nickname, password)){
+            dbCon.delete(nickname);
+            return CallbackGenerator.Messages.SUC;
+        }
+        return CallbackGenerator.Messages.SYS_ERR; //fixme
     }
 }

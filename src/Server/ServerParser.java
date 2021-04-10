@@ -24,17 +24,23 @@ public class ServerParser extends CommandParser {
     protected boolean parseRequest(String com) throws IOException {
         String comName = com.split(" ")[0].toUpperCase();
         com = com.substring(comName.length()).trim();
-        CallbackGenerator.Messages message = switch (COM.valueOf(comName)){
-            case CD -> manager.setPath(com);
-            case MKDIR -> manager.createFolder(com);
-            case REG ->  manager.register(com);
-            case UPLOAD -> manager.receiveFile(inputStream);
-            case DOWNLOAD -> manager.sendFile(com, outputStream);
-            case DIR -> manager.showDirectory(com, outputStream);
-            case DEL -> manager.deleteFile(com);
-            case RMDIR -> manager.deleteDir(com);
-            default -> CallbackGenerator.Messages.UNKNOWN;
-        };
+        CallbackGenerator.Messages message;
+        if (COM.valueOf(comName).equals(COM.LOG) || COM.valueOf(comName).equals(COM.REG) || manager.isSignedIn){
+            message = switch (COM.valueOf(comName)) {
+                case CD -> manager.setPath(com);
+                case MKDIR -> manager.createFolder(com);
+                case REG -> manager.register(com.split(" ")[0], com.split(" ")[1], com.split(" ")[2]);
+                case UPLOAD -> manager.receiveFile(inputStream);
+                case DOWNLOAD -> manager.sendFile(com, outputStream);
+                case DIR -> manager.showDirectory(com, outputStream);
+                case DEL -> manager.deleteFile(com);
+                case RMDIR -> manager.deleteDir(com);
+                case LOG -> manager.signIn(com.split(" ")[0], com.split(" ")[1]);
+                default -> CallbackGenerator.Messages.UNKNOWN;
+            };
+        }else{
+            message = CallbackGenerator.Messages.SYS_ERR;
+        }
         parseResponse(CallbackGenerator.createMessage(message));
         return true;
     }
