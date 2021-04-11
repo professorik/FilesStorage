@@ -14,6 +14,12 @@ import java.util.Random;
  */
 public class DBController {
 
+    private Connection conn;
+
+    public DBController() {
+        conn = this.connect();
+    }
+
     private Connection connect() {
         Connection conn = null;
         try {
@@ -27,8 +33,7 @@ public class DBController {
 
     public boolean userExist(String name) {
         String sql = String.format("SELECT id FROM USERS WHERE nick = '%s'", name);
-        try (Connection conn = this.connect();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement();
              ResultSet res = stmt.executeQuery(sql)) {
             return res.next();
         } catch (SQLException e) {
@@ -39,8 +44,7 @@ public class DBController {
 
     public boolean userExist(String name, String password) {
         String sql = String.format("SELECT password, salt FROM USERS WHERE nick = '%s'", name);
-        try (Connection conn = this.connect();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement();
              ResultSet res = stmt.executeQuery(sql)) {
             return res.getString("password").equals(getPassword(password, res.getString("salt")));
         } catch (SQLException | NoSuchAlgorithmException e) {
@@ -51,8 +55,7 @@ public class DBController {
 
     public boolean registerUser(String nick, String password, String path) {
         String sql = "INSERT INTO USERS(nick,password,salt,path) VALUES(?,?,?,?)";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nick);
             String salt = getSalt();
             pstmt.setString(2, getPassword(password, salt));
@@ -82,9 +85,7 @@ public class DBController {
 
     public String getPath(String name){
         String sql = String.format("SELECT path FROM USERS WHERE nick = '%s'", name);
-        try {
-            Connection conn = this.connect();
-             Statement stmt = conn.createStatement();
+        try {Statement stmt = conn.createStatement();
              ResultSet res = stmt.executeQuery(sql);
              return res.getString("path");
         } catch (SQLException e) {
@@ -95,8 +96,7 @@ public class DBController {
 
     public void updatePath(String nick, String path) {
         String sql = "UPDATE USERS SET path = ? WHERE nick = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, path);
             pstmt.setString(2, nick);
             pstmt.executeUpdate();
@@ -107,8 +107,7 @@ public class DBController {
 
     public void updatePassword(String nick, String password) {
         String sql = "UPDATE USERS SET password = ?, salt = ? WHERE nick = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             String salt = getSalt();
             pstmt.setString(1, getPassword(password, salt));
             pstmt.setString(2, salt);
@@ -121,12 +120,19 @@ public class DBController {
 
     public void delete(String nick) {
         String sql = "DELETE FROM USERS WHERE nick = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nick);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void finish() {
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 }

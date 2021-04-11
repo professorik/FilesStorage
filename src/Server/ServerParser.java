@@ -21,21 +21,23 @@ public class ServerParser extends CommandParser {
     }
 
     @Override
-    protected boolean parseRequest(String com) throws IOException {
-        String comName = com.split(" ")[0].toUpperCase();
+    protected boolean parseRequest(String com) {
+        String[] tempArr = com.split(" "); //FIXME: files can contain spaces
+        String comName = tempArr[0].toUpperCase();
         com = com.substring(comName.length()).trim();
         CallbackGenerator.Messages message;
         if (COM.valueOf(comName).equals(COM.LOG) || COM.valueOf(comName).equals(COM.REG) || manager.isSignedIn){
             message = switch (COM.valueOf(comName)) {
                 case CD -> manager.setPath(com);
                 case MKDIR -> manager.createFolder(com);
-                case REG -> manager.register(com.split(" ")[0], com.split(" ")[1], com.split(" ")[2]);
+                case REG -> manager.register(tempArr[1], tempArr[2], tempArr[3]);
                 case UPLOAD -> manager.receiveFile(inputStream);
                 case DOWNLOAD -> manager.sendFile(com, outputStream);
                 case DIR -> manager.showDirectory(com, outputStream);
                 case DEL -> manager.deleteFile(com);
                 case RMDIR -> manager.deleteDir(com);
-                case LOG -> manager.signIn(com.split(" ")[0], com.split(" ")[1]);
+                case LOG -> manager.signIn(tempArr[1], tempArr[2]);
+                case REN -> manager.renameFile(tempArr[1], tempArr[2]);
                 default -> CallbackGenerator.Messages.UNKNOWN;
             };
         }else{

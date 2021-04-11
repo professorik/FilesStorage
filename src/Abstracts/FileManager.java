@@ -40,6 +40,12 @@ public abstract class FileManager {
         try {
             int bytes;
             File file = new File(path);
+            if (!file.exists()){
+                file = new File(currentPath + "\\" + path);
+                if (!file.exists()){
+                    return CallbackGenerator.Messages.FNFE;
+                }
+            }
             outputStream.writeUTF(file.getName());
             FileInputStream fileInputStream = new FileInputStream(file);
             outputStream.writeLong(file.length());

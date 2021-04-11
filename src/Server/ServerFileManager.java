@@ -45,6 +45,10 @@ public class ServerFileManager extends FileManager {
     protected CallbackGenerator.Messages setPath(String currentPath) {
         if (currentPath.endsWith("\\")){
             currentPath = currentPath.substring(0, currentPath.length()-1);
+        }else if (currentPath.equals("back")){
+            this.currentPath = this.currentPath.substring(0, this.currentPath.lastIndexOf("\\"));
+            dbCon.updatePath(userName, this.currentPath);
+            return CallbackGenerator.Messages.SUC;
         }
         File theDir = new File(currentPath);
         if (theDir.exists()) {
@@ -182,5 +186,17 @@ public class ServerFileManager extends FileManager {
             return CallbackGenerator.Messages.SUC;
         }
         return CallbackGenerator.Messages.NLG;
+    }
+
+    public CallbackGenerator.Messages renameFile(String name, String replacement) {
+        File file = new File(currentPath + "\\" + name);
+        if (file.exists()){
+            File newFile = new File(currentPath + "\\" + replacement);
+            if (!newFile.exists()){
+                return file.renameTo(newFile)? CallbackGenerator.Messages.SUC: CallbackGenerator.Messages.SYS_ERR;
+            }
+            return CallbackGenerator.Messages.DIR_EXST;
+        }
+        return CallbackGenerator.Messages.FNFE;
     }
 }
