@@ -25,7 +25,7 @@ public class Client {
             inputStream = new DataInputStream(socket.getInputStream());
             ClientParser parser = new ClientParser(inputStream, outputStream, socket);
             while (!socket.isClosed()) {
-                if (parser.parseRequest(in.nextLine())) {
+                if (parser.parseRequest(in.nextLine().replaceAll("/", "\\"))) {
                     parser.parseResponse(inputStream.readUTF());
                 }
             }

@@ -34,7 +34,7 @@ public class ClientFileManager extends FileManager {
     protected boolean lookDirInfo(String com, DataInputStream inputStream) throws IOException {
         sendCommand(com);
         String res;
-        boolean fl = false; //need to read success status //FIXME
+        boolean fl = false;
         try {
             Object tempObj;
             do {
@@ -68,7 +68,8 @@ public class ClientFileManager extends FileManager {
         return fl;
     }
 
-    public boolean sendFile(String path, DataOutputStream outputStream, boolean isClient) { //FIXME
+
+    public boolean sendFileToServer(String path, DataOutputStream outputStream) {
         try {
             outputStream.writeUTF("UPLOAD");
         } catch (IOException e) {

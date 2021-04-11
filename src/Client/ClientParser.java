@@ -33,7 +33,7 @@ public class ClientParser extends CommandParser {
         String com = command.substring(comName.length()).trim();
         try {
             return switch (COM.valueOf(comName)) {
-                case UPLOAD -> manager.sendFile(com, outputStream, true);
+                case UPLOAD -> manager.sendFileToServer(com, outputStream);
                 case DOWNLOAD -> manager.receiveFile(com, inputStream);
                 case DIR -> manager.lookDirInfo(command, inputStream);
                 case HELP -> manager.printHelp(showCommands());

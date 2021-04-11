@@ -34,13 +34,16 @@ public class ServerFileManager extends FileManager {
         }else{
             userName = null;
             currentPath = null;
-            return CallbackGenerator.Messages.SYS_ERR; // fixme
+            return CallbackGenerator.Messages.NO_USR;
         }
         return CallbackGenerator.Messages.SUC;
     }
 
+    //TODO: check if the user is trying to navigate to another user's folder
+    //      - parse a query more flexible
+    //      - move back
     protected CallbackGenerator.Messages setPath(String currentPath) {
-        if (currentPath.endsWith("\\") || currentPath.endsWith("/")){ //FIXME: incorrect via endsWith
+        if (currentPath.endsWith("\\")){
             currentPath = currentPath.substring(0, currentPath.length()-1);
         }
         File theDir = new File(currentPath);
@@ -55,7 +58,7 @@ public class ServerFileManager extends FileManager {
     }
 
     protected CallbackGenerator.Messages createFolder(String dirName) {
-        File theDir = new File(currentPath + "/" + dirName);
+        File theDir = new File(currentPath + "\\" + dirName);
         if (!theDir.exists()) {
             theDir.mkdirs();
             return CallbackGenerator.Messages.SUC;
@@ -128,7 +131,8 @@ public class ServerFileManager extends FileManager {
     }
 
     private boolean isPasswordsValid(String pass1, String pass2){
-        if (pass1.equals(pass2) && pass1.length() > 3){ //todo: add validation
+        //\\w+ - symbols, numbers and underline
+        if (pass1.equals(pass2) && pass1.length() > 3 && pass1.matches("\\w+")){
             return true;
         }
         return false;
@@ -138,14 +142,14 @@ public class ServerFileManager extends FileManager {
         if (isPasswordsValid(pass1, pass2)){
             dbCon.updatePassword(userName, pass1);
         }
-        return CallbackGenerator.Messages.SYS_ERR; //fixme
+        return CallbackGenerator.Messages.BAD_PAS;
     }
 
     protected CallbackGenerator.Messages register(String nickname, String pass1, String pass2){
         if (isPasswordsValid(pass1, pass2)) {
             return register(nickname, pass1);
         }
-        return CallbackGenerator.Messages.SYS_ERR; //fixme
+        return CallbackGenerator.Messages.BAD_PAS;
     }
 
     private CallbackGenerator.Messages register(String nickname, String password) {
@@ -177,6 +181,6 @@ public class ServerFileManager extends FileManager {
             dbCon.delete(nickname);
             return CallbackGenerator.Messages.SUC;
         }
-        return CallbackGenerator.Messages.SYS_ERR; //fixme
+        return CallbackGenerator.Messages.NLG;
     }
 }

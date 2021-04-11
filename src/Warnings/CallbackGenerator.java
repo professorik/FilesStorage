@@ -12,10 +12,13 @@ public class CallbackGenerator {
 
     public enum Messages {
         SUC("Success", Status.SUC),
+        NLG("You aren't logged in", Status.ERR),
+        BAD_PAS("Invalid passwords", Status.ERR),
         DIR_EXST("The directory is exist.", Status.ERR),
         NO_DIR("This directory not found.", Status.ERR),
         SYS_ERR("Some error.", Status.ERR),
         NO_MEM("There is no free memory.", Status.ERR),
+        NO_USR("No such user found", Status.ERR),
         USR_EXST("This nickname is exist.", Status.ERR),
         UNKNOWN("Unknown command.", Status.ERR),
         FNFE("File not found.", Status.ERR);
