@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ServerProject:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ServerProject_jar</output-path>
+    <root id="archive" name="ServerProject.jar">
+      <element id="module-output" name="ServerProject" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/json-simple-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/junit-4.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/hamcrest-core-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/sqlite-jdbc-3.34.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

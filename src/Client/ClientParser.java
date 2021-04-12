@@ -28,7 +28,7 @@ public class ClientParser extends CommandParser {
     }
 
     @Override
-    protected boolean parseRequest(String command) throws IOException {
+    public boolean parseRequest(String command) throws IOException {
         String comName = command.split(" ")[0].toUpperCase();
         String com = command.substring(comName.length()).trim();
         try {
@@ -47,14 +47,15 @@ public class ClientParser extends CommandParser {
     }
 
     @Override
-    protected void parseResponse(String resp) {
+    public boolean parseResponse(String resp) {
         try {
             JSONObject jsonObject = (JSONObject) new JSONParser().parse(resp);
             String key = jsonObject.keySet().iterator().next().toString();
-            CallbackGenerator.displayMessage(CallbackGenerator.Messages.valueOf((String) jsonObject.get(key)));
+            return CallbackGenerator.displayMessage(CallbackGenerator.Messages.valueOf((String) jsonObject.get(key)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
 /*

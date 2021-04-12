@@ -43,6 +43,7 @@ public class Server {
                 parser = new ServerParser(inputStream, outputStream);
                 String s = inputStream.readUTF();
                 while (true) {
+                    System.out.println(s);
                     parser.parseRequest(s);
                     try {
                         s = inputStream.readUTF();

@@ -51,7 +51,7 @@ public abstract class CommandParser {
 
     protected abstract boolean parseRequest(String com) throws IOException;
 
-    protected abstract void parseResponse(String com);
+    protected abstract boolean parseResponse(String com);
 
     public CommandParser(DataInputStream inputStream, DataOutputStream outputStream) {
         this.inputStream = inputStream;

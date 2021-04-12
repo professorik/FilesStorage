@@ -48,11 +48,12 @@ public class ServerParser extends CommandParser {
     }
 
     @Override
-    protected void parseResponse(String com) {
+    protected boolean parseResponse(String com) {
         try {
             outputStream.writeUTF(com);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
