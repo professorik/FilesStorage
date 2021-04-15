@@ -58,11 +58,3 @@ public class ClientParser extends CommandParser {
         return false;
     }
 }
-/*
-CD D:\IdeaProjects\ServerProject\src\folder1
-DEL D:\IdeaProjects\ServerProject\src\folder1\folder2\14.png
-RMDIR D:\IdeaProjects\ServerProject\src\folder1\folder2
-MKDIR folder10
-UPLOAD C:\Users\Tony\Desktop\logo512_512.png
-DOWNLOAD D:\IdeaProjects\ServerProject\src\folder1\logo512_512.png
- */

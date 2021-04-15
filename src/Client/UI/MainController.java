@@ -2,12 +2,14 @@ package Client.UI;
 
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -26,7 +28,11 @@ public class MainController implements Initializable {
         t.setToX(14.0D);
         t.play();
         t.setOnFinished((e) -> {
-            this.fxml = Launch.signUp;
+            try {
+                this.fxml = FXMLLoader.load(getClass().getResource("fxml/SignUp.fxml"));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
             this.vbox.getChildren().removeAll(new Node[0]);
             this.vbox.getChildren().setAll(new Node[]{this.fxml});
         });
@@ -38,7 +44,12 @@ public class MainController implements Initializable {
         t.setToX(this.vbox.getLayoutX() * 32.0D);
         t.play();
         t.setOnFinished((e) -> {
-            this.fxml = Launch.signIn;
+            try {
+                this.fxml = FXMLLoader.load(getClass().getResource("fxml/SignIn.fxml"));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            ;
             this.vbox.getChildren().removeAll(new Node[0]);
             this.vbox.getChildren().setAll(new Node[]{this.fxml});
         });

@@ -17,31 +17,25 @@ import java.util.Scanner;
 
 public class Launch extends Application {
 
-    protected static Parent signIn;
-    protected static Parent signUp;
-
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("fxml/Main.fxml"));
-        signIn = FXMLLoader.load(getClass().getResource("fxml/SignIn.fxml"));
-        signUp = FXMLLoader.load(getClass().getResource("fxml/SignUp.fxml"));
         Scene scene = new Scene(root);
         scene.setFill(Color.TRANSPARENT);
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setScene(scene);
+        /*root.setOnDragDetected(mouseDragEvent -> {
+            stage.setX(mouseDragEvent.getX());
+            stage.setY(mouseDragEvent.getY());
+        });*/
         connect();
-        stage.setOnCloseRequest(windowEvent -> {
-            try {
-                parser.parseRequest("EXIT");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        stage.setOnCloseRequest(windowEvent -> manager.exit());
         stage.show();
     }
 
-    private final static String host = "localhost";//"192.168.0.228";
-    private static int port = 3333;
-    protected static ClientParser parser;
+    private final String host = "localhost";//"192.168.0.228";
+    private int port = 3333;
+    protected static ClientParserUI parser;
+    protected static ClientFileManagerUI manager;
 
     private void connect() {
         Socket socket;
@@ -51,7 +45,8 @@ public class Launch extends Application {
             socket = new Socket(host, port);
             outputStream = new DataOutputStream(socket.getOutputStream());
             inputStream = new DataInputStream(socket.getInputStream());
-            parser = new ClientParser(inputStream, outputStream, socket);
+            parser = new ClientParserUI(inputStream);
+            manager = new ClientFileManagerUI(inputStream, outputStream, socket);
         } catch (Exception e) {
             e.printStackTrace();
         }

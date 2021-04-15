@@ -1,9 +1,18 @@
 package Client.UI;
 
+import Client.ClientParser;
+import Warnings.CallbackGenerator;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,21 +27,38 @@ public class SignInController implements Initializable {
     @FXML
     private TextField LoginField;
     @FXML
+    private Label errorLabel;
+    @FXML
     private TextField PasswordField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        errorLabel.setVisible(false);
         SignInButton.setOnAction(event -> {
             try {
-                Launch.parser.parseRequest("LOG " + LoginField.getText() + " " + PasswordField.getText());
+                String com = "LOG " + LoginField.getText() + " " + PasswordField.getText();
+                if (Launch.manager.sendCommand(com)) {
+                    String ans = Launch.parser.parseResp();
+                    if (ans != null) {
+                        errorLabel.setText(ans);
+                        errorLabel.setVisible(true);
+                        Shake.shake(LoginField);
+                        Shake.shake(PasswordField);
+                    }else{
+                        errorLabel.setVisible(false);
+                        Parent root = FXMLLoader.load(getClass().getResource("fxml/FileManager.fxml"));
+                        SignInButton.getScene().getWindow().hide();
+                        Stage stage = new Stage();
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(LoginField.getText());
-            System.out.println(PasswordField.getText());
         });
         ForgetPasswordButton.setOnAction(event -> {
-                System.out.println("Hello, motherfucker!!!");
+            System.out.println("OK");
         });
     }
 }

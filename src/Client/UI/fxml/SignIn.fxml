@@ -11,14 +11,23 @@
 
 <VBox id="VBox" alignment="CENTER_LEFT" prefHeight="480.0" prefWidth="480.0" styleClass="white-pane" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.UI.SignInController">
    <children>
-      <Label text="Sign In" textFill="#9a4d3c">
-         <font>
-            <Font size="20.0" />
-         </font>
+      <HBox prefHeight="34.0" prefWidth="480.0">
+         <children>
+            <Label text="Sign In" textFill="#9a4d3c">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="errorLabel" text="Some error karkar" textFill="#ff2b00">
+               <HBox.margin>
+                  <Insets left="10.0" top="7.0" />
+               </HBox.margin>
+            </Label>
+         </children>
          <VBox.margin>
-            <Insets left="20.0" right="15.0" top="20.0" />
+            <Insets left="15.0" right="15.0" />
          </VBox.margin>
-      </Label>
+      </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="200.0" styleClass="tf_box">
          <VBox.margin>
             <Insets left="15.0" right="15.0" top="20.0" />

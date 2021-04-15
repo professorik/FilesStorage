@@ -46,4 +46,12 @@ public class CallbackGenerator {
             return false;
         }
     }
+
+    public static String getErrorMessage(Messages message) {
+        if (message.type == Status.SUC){
+            return null;
+        }else{
+            return message.label;
+        }
+    }
 }
